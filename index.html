@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="description" content="Swat That Fly - swat flies room by room and reach 1,000,000 points and defeat the Mega Queen Fly. Plays in any browser on phones, tablets and computers.">
+<meta name="description" content="Swat That Fly - swat flies room by room and reach 100,000 points and defeat the Mega Queen Fly. Plays in any browser on phones, tablets and computers.">
 <meta name="theme-color" content="#070a11">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -361,7 +361,7 @@
   <!-- START SCREEN -->
   <div id="start-screen" class="overlay-screen">
     <div class="title-logo">SWAT THAT FLY</div>
-    <div class="title-sub" style="margin-bottom:8px;">1,000,000 POINT CHALLENGE</div>
+    <div class="title-sub" style="margin-bottom:8px;">100,000 POINT BOSS CHALLENGE</div>
     <div class="credit">Made by: <strong>Smith R. Poston II</strong></div>
 
     <div class="instructions-box">
@@ -378,8 +378,8 @@
         <li><span class="key">GOLD FLY</span> Maggots burst out when it dies - squash them in 5 seconds or they hatch into a tough horse fly!</li>
         <li><span class="key">25,000 PTS</span> Your swatter upgrades to the electric swatter</li>
         <li><span class="key">50,000 PTS</span> 3 sticky fly traps hang from the top edge and catch flies for you</li>
-        <li><span class="key">75,000 PTS</span> Choose: fly swatter, electric swatter or fly traps</li>
-        <li><span class="key">FINAL CHALLENGE</span> Reach 1,000,000 points, clear the Infestation Room, then defeat the Mega Queen Fly!</li>
+        <li><span class="key">75,000 PTS</span> Pause and choose the standard or electric fly swatter</li>
+        <li><span class="key">100,000 PTS</span> Face the final Boss Fly and defeat it to win!</li>
       </ul>
     </div>
 
@@ -390,18 +390,18 @@
 
   <!-- VICTORY SCREEN -->
   <div id="victory-screen" class="overlay-screen hidden">
-    <div class="title-logo">GRAND MASTER SWATTER!</div>
-    <div class="title-sub" style="color:#2ed573;">MEGA QUEEN FLY DEFEATED — THE HOUSE IS FLY-FREE!</div>
+    <div class="title-logo">CONGRATULATIONS!</div>
+    <div class="title-sub" style="color:#2ed573;">YOU BEAT THE GAME!</div>
 
     <div class="instructions-box" style="text-align:center;font-size:max(13px, calc(16px * var(--k)));min-width:min(380px, 90%);">
-      <p style="margin-bottom:8px;">⭐ Final Score: <strong id="vic-score" style="color:#ffd90f;">1,000,000</strong></p>
+      <p style="margin-bottom:8px;">⭐ Final Score: <strong id="vic-score" style="color:#ffd90f;">100,000</strong></p>
       <p style="margin-bottom:8px;">🪰 Flies Swatted: <strong id="vic-kills" style="color:#2ed573;">0</strong></p>
       <p style="margin-bottom:8px;">🎯 Accuracy: <strong id="vic-acc" style="color:#3ee6ff;">0%</strong></p>
       <p style="margin-bottom:8px;">🔥 Best Combo: <strong id="vic-combo" style="color:#ff4757;">0x</strong></p>
       <p>🏆 FINAL TITLE: <strong id="vic-rank" style="color:#ffd90f;font-size:1.5em;">S</strong></p>
     </div>
 
-    <button id="restart-btn" class="btn" type="button">PLAY AGAIN!</button>
+    <button id="restart-btn" class="btn" type="button">PLAY AGAIN</button>
   </div>
 
   <!-- GAME OVER SCREEN -->
@@ -419,9 +419,8 @@
     <div class="title-logo">CHOOSE YOUR WEAPON</div>
     <div class="title-sub">75,000 POINTS! PICK ONE</div>
     <div class="choice-row">
-      <button id="pick-classic" class="choice" type="button"><b>FLY SWATTER</b><span>The classic swatter with a wider swat area (+30%).</span></button>
-      <button id="pick-electric" class="choice" type="button"><b>ELECTRIC SWATTER</b><span>Each zap arcs to the nearest fly for a free extra hit.</span></button>
-      <button id="pick-traps" class="choice" type="button"><b>FLY TRAPS</b><span>3 bigger sticky traps (10 flies each) plus the classic swatter.</span></button>
+      <button id="pick-classic" class="choice" type="button"><b>🪰 STANDARD FLY SWATTER</b><span>Classic manual swatter with a wider swat area (+30%).</span></button>
+      <button id="pick-electric" class="choice" type="button"><b>⚡ ELECTRIC FLY SWATTER</b><span>Each zap arcs to the nearest fly for a free extra hit.</span></button>
     </div>
   </div>
 
@@ -780,7 +779,7 @@
   const WIDTH = 960;
   const HEIGHT = 600;
   const MAX_AMMO = 30;
-  const VICTORY_POINTS = 1000000;
+  const VICTORY_POINTS = 100000;
   const FLOOR_Y = 352;
 
   const ROOMS = [
@@ -819,6 +818,7 @@
     finalChallengeStarted: false,
     loadout: null,
     choosing: false,
+    weaponChoiceDone: false,
     unlockSeen: 0,
     shotsFired: 0,
     shotsHit: 0,
@@ -837,7 +837,7 @@
 
     roomBannerTimer: 0.95,
     roomBannerText: 'KITCHEN',
-    roomBannerSub: 'GOAL: REACH 1,000,000 POINTS!'
+    roomBannerSub: 'GOAL: REACH 100,000 POINTS AND DEFEAT THE BOSS FLY!'
   };
 
   let flies = [];
@@ -1602,13 +1602,18 @@
       this.targetY = 260;
       this.width = isMega ? 320 : 220;
       this.height = isMega ? 260 : 180;
-      this.hp = isMega ? 36 : 10;
+      this.hp = isMega ? 72 : 10;
       this.maxHp = this.hp;
       this.alive = true;
       this.wingPhase = 0;
-      this.moveTimer = isMega ? 0.75 : 1.2;
+      this.moveTimer = isMega ? 0.55 : 1.2;
       this.spawnTimer = isMega ? 1.45 : 2.4;
       this.hitFlash = 0;
+      // The final boss cycles its armor: players must time their strikes.
+      this.shieldCycle = 0;
+      this.isVulnerable = !isMega;
+      this.vulnerabilityTimer = isMega ? 1.7 : 999;
+      this.phase = 1;
       this.bob = Math.random() * Math.PI * 2;
     }
 
@@ -1618,19 +1623,35 @@
       this.bob += dt * 3.0;
       if (this.hitFlash > 0) this.hitFlash -= dt;
 
+      if (this.isMega) {
+        this.shieldCycle += dt;
+        const cycleLength = 4.2;
+        const phase = Math.min(3, Math.floor((this.maxHp - this.hp) / (this.maxHp / 3)) + 1);
+        this.phase = phase;
+        const vulnerableLength = phase === 1 ? 1.7 : (phase === 2 ? 1.45 : 1.2);
+        const cyclePosition = this.shieldCycle % cycleLength;
+        const nowVulnerable = cyclePosition < vulnerableLength;
+        if (nowVulnerable !== this.isVulnerable) {
+          this.isVulnerable = nowVulnerable;
+          gameState.hitNotice = nowVulnerable ? 'BOSS EXPOSED! STRIKE NOW!' : 'BOSS SHIELDED — WAIT FOR THE OPENING!';
+          gameState.hitNoticeTimer = 1.5;
+        }
+      }
+
       this.moveTimer -= dt;
       if (this.moveTimer <= 0) {
-        this.moveTimer = this.isMega ? 0.65 + Math.random() * 0.75 : 1.1 + Math.random() * 1.2;
+        this.moveTimer = this.isMega ? (this.phase === 1 ? 0.48 : this.phase === 2 ? 0.34 : 0.24) + Math.random() * (this.phase === 1 ? 0.38 : this.phase === 2 ? 0.28 : 0.20) : 1.1 + Math.random() * 1.2;
         this.targetX = 180 + Math.random() * (WIDTH - 360);
         this.targetY = 160 + Math.random() * 190;
         sound.playBossRoar();
       }
 
-      this.x += (this.targetX - this.x) * 2.1 * dt;
-      this.y += (this.targetY - this.y) * 2.1 * dt;
+      const moveSpeed = this.isMega ? (this.phase === 1 ? 2.8 : this.phase === 2 ? 3.8 : 4.8) : 2.1;
+      this.x += (this.targetX - this.x) * moveSpeed * dt;
+      this.y += (this.targetY - this.y) * moveSpeed * dt;
 
       this.spawnTimer -= dt;
-      if (this.spawnTimer <= 0 && flies.filter(r => r.alive).length < 11) {
+      if (!this.isMega && this.spawnTimer <= 0 && flies.filter(r => r.alive).length < 11) {
         this.spawnTimer = this.isMega ? 1.35 : 2.2;
         flies.push(new Fly(this.isMega ? 2.65 : 1.9, 'speeder'));
         for (let i = 0; i < 8; i++) {
@@ -1653,6 +1674,8 @@
         gameState.score += 1000;
         gameState.kills++;
         if (this.isMega) {
+          gameState.isPaused = true;
+          gameState.isPlaying = false;
           setTimeout(triggerVictory, 1100);
         } else if (gameState.score >= VICTORY_POINTS) {
           setTimeout(beginFinalRoom, 1100);
@@ -1670,6 +1693,21 @@
       c.save();
       c.translate(this.x, this.y + bob);
       if (this.isMega) c.scale(1.42, 1.42);
+
+      // A visible pulsing energy shield surrounds the boss while armored.
+      if (this.isMega && !this.isVulnerable) {
+        const pulse = 0.5 + Math.sin(this.bob * 2.4) * 0.08;
+        c.globalAlpha = pulse;
+        c.strokeStyle = '#38d9ff';
+        c.lineWidth = 8;
+        c.setLineDash([14, 9]);
+        c.beginPath(); c.ellipse(0, 4, 128, 112, 0, 0, Math.PI * 2); c.stroke();
+        c.setLineDash([]);
+        c.globalAlpha = 1;
+      } else if (this.isMega) {
+        c.strokeStyle = '#ffe45c'; c.lineWidth = 7;
+        c.beginPath(); c.ellipse(0, 4, 128, 112, 0, 0, Math.PI * 2); c.stroke();
+      }
 
       c.fillStyle = 'rgba(0,0,0,0.32)';
       fillOval(c, 0, 95, 110, 36, 0);
@@ -1822,22 +1860,30 @@
         c.restore();
       }
 
-      // Round cardboard winding tube at the bottom end of the flypaper.
-      const tubeY = TRAP_LEN - 4;
-      const tubeGrad = c.createLinearGradient(-20, tubeY, 20, tubeY + 20);
-      tubeGrad.addColorStop(0, '#e4c18a');
-      tubeGrad.addColorStop(0.45, '#b98248');
-      tubeGrad.addColorStop(1, '#80502c');
+      // Upright cylindrical cardboard core, joined directly to the paper's lower edge.
+      const tubeY = ribbonBottom;
+      const tubeH = 28;
+      const tubeW = 13;
+      const tubeGrad = c.createLinearGradient(-tubeW, 0, tubeW, 0);
+      tubeGrad.addColorStop(0, '#704322');
+      tubeGrad.addColorStop(0.22, '#c18a50');
+      tubeGrad.addColorStop(0.52, '#e5c18b');
+      tubeGrad.addColorStop(0.82, '#a66d3b');
+      tubeGrad.addColorStop(1, '#59351f');
       c.fillStyle = tubeGrad;
-      drawRoundedRect(c, -19, tubeY - 7, 38, 18, 7); c.fill();
-      c.strokeStyle = '#654126'; c.lineWidth = 1.5;
-      drawRoundedRect(c, -19, tubeY - 7, 38, 18, 7); c.stroke();
-      c.fillStyle = '#e9c995';
-      c.beginPath(); c.ellipse(-17, tubeY + 2, 4.2, 8.3, 0, 0, Math.PI * 2); c.fill(); c.stroke();
-      c.fillStyle = '#754a2b';
-      c.beginPath(); c.ellipse(17, tubeY + 2, 4.2, 8.3, 0, 0, Math.PI * 2); c.fill(); c.stroke();
-      c.strokeStyle = 'rgba(255,235,190,0.55)'; c.lineWidth = 1;
-      c.beginPath(); c.moveTo(-10, tubeY - 5); c.lineTo(10, tubeY - 5); c.stroke();
+      c.fillRect(-tubeW, tubeY, tubeW * 2, tubeH);
+      c.strokeStyle = '#5b3822'; c.lineWidth = 1.5;
+      c.strokeRect(-tubeW, tubeY, tubeW * 2, tubeH);
+      c.fillStyle = '#e4c18d';
+      c.beginPath(); c.ellipse(0, tubeY, tubeW, 4.8, 0, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = '#704727'; c.lineWidth = 1.5; c.stroke();
+      c.fillStyle = '#704727';
+      c.beginPath(); c.ellipse(0, tubeY, 5.2, 2.1, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#c18a50';
+      c.beginPath(); c.ellipse(0, tubeY + tubeH, tubeW, 4.8, 0, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = '#5b3822'; c.stroke();
+      c.strokeStyle = 'rgba(255,235,190,0.5)'; c.lineWidth = 1.2;
+      c.beginPath(); c.moveTo(-6, tubeY + 5); c.lineTo(-6, tubeY + tubeH - 5); c.stroke();
 
       if (full) {
         c.globalAlpha = 1;
@@ -1902,7 +1948,8 @@
   }
 
   function pickLoadout(kind) {
-    gameState.loadout = kind;
+    gameState.loadout = kind === 'electric' ? 'electric' : 'classic';
+    gameState.weaponChoiceDone = true;
     gameState.choosing = false;
     gameState.isPaused = false;
     document.getElementById('choose-screen').classList.add('hidden');
@@ -1913,7 +1960,6 @@
   }
 
   function checkMilestones() {
-    if (gameState.score < 75000 && gameState.loadout) gameState.loadout = null;
     const tier = gameState.score >= 50000 ? 2 : (gameState.score >= 25000 ? 1 : 0);
     if (tier > gameState.unlockSeen) {
       gameState.hitNotice = tier === 2 ? 'FLY TRAPS UNLOCKED!' : 'ELECTRIC SWATTER UNLOCKED!';
@@ -1921,8 +1967,15 @@
       sound.playFanfare();
     }
     gameState.unlockSeen = tier;
-    if (gameState.score >= 75000 && !gameState.loadout && !gameState.choosing &&
-        gameState.isPlaying && !gameState.isVictory) openChoice();
+    if (gameState.score >= 75000 && !gameState.weaponChoiceDone && !gameState.choosing &&
+        gameState.isPlaying && !gameState.isVictory) {
+      openChoice();
+      return;
+    }
+    if (gameState.score >= VICTORY_POINTS && gameState.weaponChoiceDone &&
+        !gameState.finalChallengeStarted && gameState.isPlaying && !gameState.isVictory) {
+      beginMegaQueenBattle();
+    }
   }
 
   function drawWeapon(c) {
@@ -2528,7 +2581,7 @@
       c.font = '900 14px "Arial Rounded MT Bold", "Trebuchet MS", sans-serif';
       c.textAlign = 'center';
       const megaPhase = bossQueen.isMega ? Math.max(1, Math.ceil(bossQueen.hp / (bossQueen.maxHp / 3))) : 0;
-      c.fillText(bossQueen.isMega ? `👑 MEGA QUEEN FLY — PHASE ${megaPhase}/3 👑` : '👑 THE QUEEN FLY 👑', WIDTH / 2, barY + 31);
+      c.fillText(bossQueen.isMega ? `👑 FINAL BOSS FLY — PHASE ${megaPhase}/3 — ${bossQueen.isVulnerable ? 'EXPOSED!' : 'SHIELDED'} 👑` : '👑 BOSS FLY 👑', WIDTH / 2, barY + 31);
     }
 
     // Empty warning
@@ -2604,7 +2657,13 @@
     const swatterY = gameState.mouseY;
 
     if (bossQueen && bossQueen.alive &&
-        Math.hypot(bossQueen.x - swatterX, bossQueen.y - swatterY) < (bossQueen.isMega ? 135 : 95)) {
+        Math.hypot(bossQueen.x - swatterX, bossQueen.y - swatterY) < (bossQueen.isMega ? 88 : 95)) {
+      if (bossQueen.isMega && !bossQueen.isVulnerable) {
+        gameState.hitNotice = 'BOSS SHIELDED! WAIT FOR THE GOLD GLOW!';
+        gameState.hitNoticeTimer = 1.1;
+        sound.playEmpty();
+        return;
+      }
       gameState.shotsHit++;
       if (!electricMode) sound.playSlap(gameState.combo);
       bossQueen.takeDamage();
@@ -2678,7 +2737,7 @@
     for (let i = 0; i < 12; i++) {
       particles.push(new Particle(m.x, m.y, i % 3 === 0 ? '#ffffff' : (i % 3 === 1 ? '#f1ebb0' : '#c9b84a'), 150, 2.5 + Math.random() * 3, 0.45));
     }
-    if (gameState.score >= VICTORY_POINTS && !gameState.finalChallengeStarted) beginFinalRoom();
+    if (gameState.score >= VICTORY_POINTS && gameState.weaponChoiceDone && !gameState.finalChallengeStarted) beginMegaQueenBattle();
   }
 
   function damageFly(r, via) {
@@ -2743,8 +2802,8 @@
       ));
     }
 
-    if (gameState.score >= VICTORY_POINTS && !gameState.finalChallengeStarted) {
-      beginFinalRoom();
+    if (gameState.score >= VICTORY_POINTS && gameState.weaponChoiceDone && !gameState.finalChallengeStarted) {
+      beginMegaQueenBattle();
       return;
     }
 
@@ -2903,7 +2962,9 @@
   }
 
   function beginMegaQueenBattle() {
-    if (!gameState.finalRoomActive || gameState.megaQueenActive || gameState.isVictory) return;
+    if (gameState.finalChallengeStarted || gameState.megaQueenActive || gameState.isVictory) return;
+    gameState.finalChallengeStarted = true;
+    gameState.finalRoomActive = true;
     gameState.megaQueenActive = true;
     gameState.roomKills = 0;
     gameState.levelHits = 0;
@@ -2911,9 +2972,9 @@
     gameState.killsSinceReset = 0;
     gameState.reloading = false;
     gameState.reloadTimer = 0;
-    gameState.roomBannerTimer = 1.2;
-    gameState.roomBannerText = 'THE MEGA QUEEN';
-    gameState.roomBannerSub = 'FINAL BOSS — 36 DIRECT HITS TO WIN!';
+    gameState.roomBannerTimer = 2.6;
+    gameState.roomBannerText = 'FINAL BOSS FLY!';
+    gameState.roomBannerSub = '72 HITS • 3 PHASES • STRIKE WHEN THE SHIELD TURNS GOLD!';
     flies = [];
     maggots = [];
     particles = [];
@@ -2995,8 +3056,12 @@
     gameState.finalChallengeStarted = false;
     gameState.loadout = null;
     gameState.choosing = false;
+    gameState.weaponChoiceDone = false;
     gameState.unlockSeen = 0;
     gameState.swatAnimation = 0;
+    gameState.electricFlash = 0;
+    gameState.screenShake = 0;
+    gameState.idlePhase = 0;
     gameState.reachOffset = 0;
     gameState.shotsFired = 0;
     gameState.shotsHit = 0;
@@ -3005,7 +3070,7 @@
     gameState.comboTimer = 0;
     gameState.roomBannerTimer = 0.95;
     gameState.roomBannerText = 'KITCHEN';
-    gameState.roomBannerSub = 'GOAL: REACH 1,000,000 POINTS!';
+    gameState.roomBannerSub = 'GOAL: REACH 100,000 POINTS AND DEFEAT THE BOSS FLY!';
 
     flies = [];
     maggots = [];
@@ -3187,7 +3252,25 @@
 
       ctx.restore();
     } catch (err) {
-      console.error('Render error:', err);
+      console.error('Game loop error:', err);
+      // Keep the play area visible if a browser-specific canvas or gameplay
+      // operation fails, and show the exact error instead of leaving a black screen.
+      try {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#172235';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('GAME RENDER ERROR', canvas.width / 2, canvas.height / 2 - 24);
+        ctx.font = '16px Arial, sans-serif';
+        ctx.fillText(String(err && err.message ? err.message : err).slice(0, 110),
+          canvas.width / 2, canvas.height / 2 + 18);
+      } catch (fallbackError) {
+        console.error('Fallback display error:', fallbackError);
+      }
     }
   }
 
@@ -3410,7 +3493,6 @@
   $('resume-btn').addEventListener('click', togglePause);
   $('pick-classic').addEventListener('click', () => pickLoadout('classic'));
   $('pick-electric').addEventListener('click', () => pickLoadout('electric'));
-  $('pick-traps').addEventListener('click', () => pickLoadout('traps'));
 
   window.addEventListener('resize', fit);
   window.addEventListener('orientationchange', () => { fit(); setTimeout(fit, 250); });
@@ -3418,14 +3500,54 @@
   document.addEventListener('fullscreenchange', fit);
   document.addEventListener('webkitfullscreenchange', fit);
 
-  applyInputMode();
-  fit();
-
-  if (/(^|[?&])autostart/.test(location.search)) {
-    startNewGame();
-    if (/demo/.test(location.search)) gameState.roomBannerTimer = 0;
+  // Start the render loop even if a browser-specific layout/orientation
+  // operation fails. Previously an exception in fit() could stop execution
+  // before requestAnimationFrame(gameLoop), leaving a black playfield after
+  // the Start button hid the title screen.
+  try {
+    applyInputMode();
+  } catch (initError) {
+    console.error('Input-mode initialization failed:', initError);
   }
 
+  try {
+    fit();
+  } catch (layoutError) {
+    console.error('Game layout initialization failed:', layoutError);
+    // Keep the canvas at its built-in 960 x 600 size if responsive sizing fails.
+    if (!canvas.width) canvas.width = WIDTH;
+    if (!canvas.height) canvas.height = HEIGHT;
+  }
+
+  if (/(^|[?&])autostart/.test(location.search)) {
+    try {
+      startNewGame();
+      if (/demo/.test(location.search)) gameState.roomBannerTimer = 0;
+    } catch (startError) {
+      console.error('Automatic game start failed:', startError);
+    }
+  }
+
+  // Install a global fallback for errors that occur outside the protected
+  // animation-frame body so the player never gets a silent black screen.
+  window.addEventListener('error', (event) => {
+    console.error('Unhandled game error:', event.error || event.message);
+    try {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = '#172235';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 22px Arial, sans-serif';
+      ctx.fillText('GAME ERROR — PLEASE RELOAD', canvas.width / 2, canvas.height / 2 - 10);
+      ctx.font = '14px Arial, sans-serif';
+      ctx.fillText(String(event.message || 'Unknown error').slice(0, 100), canvas.width / 2, canvas.height / 2 + 22);
+    } catch (displayError) {
+      console.error('Could not display game error:', displayError);
+    }
+  });
+
+  // Always launch the animation loop last, after initialization attempts.
   requestAnimationFrame(gameLoop);
 })();
 </script>
